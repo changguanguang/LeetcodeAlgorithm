@@ -1,0 +1,54 @@
+
+----------Z字形变换---------------
+输入: s = "LEETCODEISHIRING", numRows = 3
+输出: "LCIRETOESIIGEDHN"
+
+L   C   I   R
+E T O E S I I G
+E   D   H   N
+
+
+
+
+```java
+    
+class Solution {
+    public String convert(String s, int numRows) {
+        if(numRows == 1){
+            return s;
+        }
+        int index = 0;
+        int flag = -1;
+        // String[] res = new String[numRows];
+        /**
+            记录一个神奇的现象
+        */
+        //这样初始化ArrayList后ArrayList的size（）还是0；单纯的进行了  new Objectp[numRows];
+        //然而Collections.fill(List,object)  是根据list的size()来进行fill的，size()为0，那么就fill失败了。
+        List<StringBuilder> res = new ArrayList<StringBuilder>(numRows);
+        // Arrays.fill(res,"");
+        // Collections.fill(res,new StringBuilder());
+        for(int i=0;i<numRows;i++) res.add(new StringBuilder());
+        for(char c : s.toCharArray()){
+
+            res.get(index).append(c);
+            if(index % (numRows-1) == 0){
+                //变化方向
+                flag = flag * -1;
+            }
+            //
+            index = index + flag;
+
+        }
+        // String ans = "" ;
+        // for(int i=0;i<numRows;i++){
+        //     ans += res[i];
+        // }
+        StringBuilder ans = new StringBuilder();
+        for(StringBuilder c : res){
+            ans.append(c);
+        }
+        return new String(ans);
+    }
+}
+```

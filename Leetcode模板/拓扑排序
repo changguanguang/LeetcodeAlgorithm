@@ -1,0 +1,101 @@
+# 拓扑排序
+
+- 使用到的数据结构（3个）：
+- - 入度数组   :   通过结点的索引，我们能够得到指向这个结点的结点个数。
+  - 邻接表（使用HashSet数组实现）:   通过结点的索引，我们能够得到这个结点的后继结点；
+  - 队列（LinkedList）
+- 思想：（拓扑排序）（广度优先遍历）（贪心算法）
+- 作用：
+- - 得到一个【拓扑序】，（队列弹出）拓扑序不唯一
+  - 判断有向图中是否存在环
+- 流程：
+- - 1、在开始排序前，扫描对应的存储空间（使用邻接表），将入度为 00 的结点放入队列。
+- 2、只要队列非空，就从队首取出入度为 00 的结点，将这个结点输出到结果集中，并且将这个结点的所有邻接结点（它指向的结点）的入度减 11，在减 11 以后，如果这个被减 11 的结点的入度为 00 ，就继续入队。
+
+ 
+
+- 3、当队列为空的时候，检查结果集中的顶点个数是否和课程数相等即可。
+
+https://leetcode-cn.com/problems/course-schedule/solution/tuo-bu-pai-xu-by-liweiwei1419/
+
+ 
+
+## leetcode： 课程表
+
+你这个学期必须选修 numCourse 门课程，记为 0 到 numCourse-1 。
+
+ 在选修某些课程之前需要一些先修课程。 例如，想要学习课程 0 ，你需要先完成课程 1 ，我们用一个匹配来表示他们：[0,1]
+
+ 给定课程总量以及它们的先决条件，请你判断是否可能完成所有课程的学习？
+
+示例 1:
+    
+输入: 2, [[1,0]] 
+    
+输出: true
+
+解释: 总共有 2 门课程。学习课程 1 之前，你需要完成课程 0。所以这是可能的。 
+
+//拓扑排序（广度优先遍历思想）
+
+- 时间复杂度：O(E + V)O(E+V)。这里 EE 表示邻边的条数，VV 表示结点的个数。初始化入度为 00 的集 合需要遍历整张图，具体做法是检查每个结点和每条边，因此复杂度为 O(E+V)O(E+V)，然后对该集合进行操作，又需要遍历整张图中的每个结点和每条边，复杂度也为 O(E+V)O(E+V)；
+
+- 空间复杂度：O(E + V)O(E+V)：邻接表长度是 VV，每个课程里又保存了它所有的边。
+
+
+```java
+        public boolean canFinish(int numCourses, int[][] prerequisites) {
+            if(numCourses == 0){
+                return true;
+            }
+            if(prerequisites.length == 0 || prerequisites.length == 1){
+                return true;
+            }
+            //入度数组--表示每个节点的入度节点的个数
+            int[] indegree = new int[numCourses];
+            //邻接表
+            HashSet<Integer>[] adj = new HashSet[numCourses]; 
+            // HashSet<Integer>[] adj = new HashSet[numCourses];
+            //队列
+            Queue<Integer> queue = new LinkedList<Integer>();
+            //初始化上述数据结构
+            for(int i=0;i<numCourses;i++){
+                adj[i] = new HashSet<Integer>();
+            }
+            for(int[] temp : prerequisites ){
+                indegree[temp[0]] ++; //入度数组
+                adj[temp[1]].add(temp[0]); //邻接表
+            }
+            //循环（入队，出队）
+            //将初始入度为0的节点加入队列
+            for(int i=0;i<numCourses;i++){
+                if(indegree[i] == 0){
+                    queue.add(i);
+                }
+            }
+            int count = 0;
+            while(!queue.isEmpty()){
+                int node = queue.poll();
+                count++;
+                //从邻接表中拿出该节点的所有子节点，入度-1
+                for(Integer tempnode :adj[node]){
+                    indegree[tempnode] --;
+                    if(indegree[tempnode] == 0){
+                        queue.add(tempnode);
+                    }
+                }
+            }
+            // //如果还有节点的入度不为0，就是一个环
+            // for(int i=0;i<numCourses;i++){
+            //     if(indegree[i] !=0){
+            //         return false;
+            //     }
+            // }
+            // return true;
+            //如果弹出的点的个数 == 总的点数
+            if(count == numCourses){
+                return true;
+            }
+            return false;
+     }
+```

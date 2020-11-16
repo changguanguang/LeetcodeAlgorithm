@@ -1,0 +1,72 @@
+class Solution {
+    public int minEatingSpeed(int[] piles, int H) {
+
+        if(H <= 0 || piles.length == 0 || piles.length > H){
+            return 0;
+        }
+    
+        int maxNum  = Collections.max(Arrays.asList(piles));
+        boolean zeroExist = false;
+        int[] copyArray = new int[piles.length];
+        //初始化 piles
+        for(int i=0;i<piles.length;i++){
+            if(copyArray[i] == 0){
+                zeroExist = true;
+            }
+            copyArray[i] = piles[i];
+        }
+        //如果没有0 并且 时间H == length 那么就可以直接返回了
+        if(zeroExist == false && H == piles.length){
+            return maxNum;
+        }
+
+        for(int i=1;i < maxNum;i++){
+            int left = 0;
+            int right = piles.length-1;
+            int count = 0;//计时器
+        
+            //二分法
+            while(left <= right){
+                while(copyArray[left] <= 0 && left < piles.length){
+                        left++;
+                    }
+                while(copyArray[right] <= 0 && right > -1 ){
+                        right--;
+                    }
+                //出口
+                if(left == piles.length || right == -1){
+                    if(count <= H){
+                        return i;
+                    }
+                }
+
+                if(left == right){
+                    copyArray[left] -= i;
+                     count ++;
+                     //出口
+                    if(count <= H && copyArray[left] <= 0 ){
+                        return i;
+                    }
+                }else{
+                    copyArray[left] -= i;
+                    copyArray[right] -= i;
+                    count += 2;
+                }
+                //当count==H 的时候，left与right 之间的数不确定，
+                //若之间的数字都为0，那么就说明可以学完，
+                //如果之间的数字不为0，那么就需要break；
+                //那么就不能break；
+                if(count > H){
+                    break;
+                }
+
+            }
+            //对copyArray进行还原
+            for(int j=0;j<piles.length ;j++){
+                copyArray[j] = piles[j];
+            }
+        }
+        return maxNum;
+
+    }
+}

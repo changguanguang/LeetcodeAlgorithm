@@ -1,0 +1,49 @@
+
+
+==================压缩边界==============
+
+leetcode  螺旋矩阵 II
+
+59. 螺旋矩阵 II
+给定一个正整数 n，生成一个包含 1 到 n2 所有元素，且元素按顺时针顺序螺旋排列的正方形矩阵。
+
+示例:
+
+输入: 3
+输出:
+[
+ [ 1, 2, 3 ],
+ [ 8, 9, 4 ],
+ [ 7, 6, 5 ]
+]
+
+ 
+
+```java
+ public int[][] generateMatrix(int n) {
+    if(n == 0){
+        return new int[0][0];
+    }
+
+    //模拟边界--一圈一圈的执行
+    //==================压缩边界================
+    // left, top, right, bottom 分别为上下左右边界
+
+    int[][] matrix = new int[n][n];
+    int tar = n*n;
+    int l = 0,r = n-1,t =0,b=n-1;
+    int num =1;
+    while(num <= tar){
+        for(int i=l;i <= r;i++) matrix[t][i] = num++;
+        t++;
+        for(int i=t;i <= b;i++) matrix[i][r] = num++;
+        r--;
+        for(int i=r;i >= l;i--) matrix[b][i] = num++;
+        b--;
+        for(int i=b;i >= t;i--) matrix[i][l] = num++;
+        l++;
+    }
+    return matrix;
+}
+```
+

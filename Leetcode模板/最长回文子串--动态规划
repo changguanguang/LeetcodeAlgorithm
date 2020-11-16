@@ -1,0 +1,120 @@
+/**
+		**动态规划 --> 表格法**
+		动态: 就是在程序执行过程中继续更新值
+		规划：就是使用 ---写表格---  的方法 
+		最长回文子串
+	**用表格来表示字符串子串的组合**
+
+		输入: "babad"
+		输出: "bab"
+		注意: "aba" 也是一个有效答案。
+
+*/
+
+![image-20200530141159156](C:\Users\诚实的狮子\AppData\Roaming\Typora\typora-user-images\image-20200530141159156.png)
+
+将子串的下标组合可以表示为一个数组表格，并且对数组表格的值赋予意义，表示每个子串是否为回文串，
+
+从而想到使用动态规划来解决复杂的问题，注意遍历顺序，
+
+由于 i,j 表示组合，我们使用表格的上一半，注意遍历先后顺序（遍历顺序是使用动态规划的关键）
+
+
+​       
+
+```java
+//动态规划法  
+public String longestPalindrome(String s) {
+        int len = s.length();
+         //特殊处理
+        if(len <= 1){
+            return s;
+        }
+        
+        //table表示子串 s[i..j] 是否为回文子串，这里子串 s[i..j] 定义为左闭右闭区间，可以取到 s[i] 和 s[j]。
+    	boolean[][] table = new boolean[len][len];
+        //最长字串的左右节点索引以及length
+        int l = 0, r = 0;
+        int maxlen = 0;
+
+        //初始化
+        for (int i = 0; i < len; i++) {
+            table[i][i] = true;
+        }
+        //动态规划正文
+        for (int j = 1; j < len; j++) {
+            for (int i = 0; i < j; i++) {
+
+                if (s.charAt(i) == s.charAt(j)) {
+                    if (j - i < 3) {
+                        table[i][j] = true;
+                    } else {
+                        //状态转移方程
+                        table[i][j] = table[i + 1][j - 1];
+                    }
+                } else {
+                    table[i][j] = false;
+                }
+                if (table[i][j]) {
+                    if (maxlen < j - i + 1) {
+                        maxlen = j - i + 1;
+                        l = i;
+                        r = j;
+                    }
+                }
+            }
+        }
+        return s.substring(l, r + 1);
+
+    }
+```
+
+```java
+//中心扩散法
+//中心扩散
+	//输入: "babad"
+	//输出: "bab"
+    public String longestPalindrome(String s) {
+
+        int len = s.length();
+        if(len <=1){
+            return s;
+        }
+        String maxStr = "";
+        String tempMaxstr;
+        //依次扫描每个索引，对每个char进行中心扩散
+        //包括：  奇数扩散  和  偶数扩散
+        for(int i=0;i<len-1;i++){
+            //奇数扩散
+            String string1 = centerbread(s,i,i);
+            String string2 = "";
+            if(s.charAt(i)==s.charAt(i+1)){
+                //偶数扩散
+                string2 = centerbread(s,i,i+1);
+            }
+            tempMaxstr = string1.length()>string2.length()?string1:string2;
+            if(tempMaxstr.length()>maxStr.length()){
+                maxStr = tempMaxstr;
+            }
+        
+        }
+        return maxStr;
+
+    }
+
+    public String centerbread(String s,int i,int j){
+        int len = s.length();
+        while(i>=0&&j<len){
+            if(s.charAt(i) == s.charAt(j)){
+                i--;
+                j++;
+            }else{
+                break;
+            }
+        }
+        return s.substring(i+1,j);
+    }
+```
+
+
+

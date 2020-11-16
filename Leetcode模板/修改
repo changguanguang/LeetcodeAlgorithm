@@ -1,0 +1,84 @@
+class Solution {
+    public int minEatingSpeed(int[] piles, int H) {
+
+        if (H <= 0 || piles.length == 0 || piles.length > H) {
+            return 0;
+        }
+
+        int maxNum = 0;
+        boolean zeroExist = false;
+        int[] copyArray = new int[piles.length];
+        //初始化 piles
+        for (int i = 0; i < piles.length; i++) {
+            if (copyArray[i] == 0) {
+                zeroExist = true;
+            }
+            if(maxNum < piles[i]){
+                maxNum = piles[i];
+            }
+            copyArray[i] = piles[i];
+        }
+        //如果没有0 并且 时间H == length 那么就可以直接返回了
+        if (zeroExist == false && H == piles.length) {
+            return maxNum;
+        }
+        int low = 0,high = maxNum;
+        while(low < high){
+            int mid = (low + high) /2;
+            if(possible(copyArray,mid,H)){
+                high = mid;
+            }else{
+                low = mid +1;
+            }
+        }
+
+
+        return low;
+
+    }
+
+    /**
+        使用二分法进行判断 
+    */
+    public boolean possible(int[] copyArray,int i, int H){
+        //不得修改copyArray的值
+        int left = 0;
+        int right = copyArray.length - 1;
+        int count = 0;//计时器
+
+        //二分法
+        while (left <= right) {
+
+            //出口
+            if (left == copyArray.length || right == -1) {
+                if (count <= H) {
+                    return true;
+                }
+            }
+
+            if (left == right) {
+                count += Math.ceil(copyArray[left] / i);
+                //出口
+                if (count <= H ) {
+                    return true;
+                }
+            } else {
+                count += Math.ceil(copyArray[left] / i);
+                count += Math.ceil(copyArray[right] / i);
+                left++;
+                right--;
+            }
+            //当count==H 的时候，left与right 之间的数不确定，
+            //若之间的数字都为0，那么就说明可以学完，
+            //如果之间的数字不为0，那么就需要break；
+            //那么就不能break；
+            if (count > H) {
+                break;
+            }
+
+        }
+        if(count <= H) return true;
+        return false;
+
+    }
+}

@@ -1,0 +1,86 @@
+#  快速排序
+
+
+
+
+
+1. 普通快排（双指针快排）
+
+```JAVA
+
+public class QuickSort {
+    
+    /**
+    递归的应用
+    */
+
+    public static void quickSort(int[] arr, int low, int high) {
+
+
+        if (low < high) {
+            int index = getIndex(arr, low, high);
+
+            quickSort(arr, low, index - 1);
+            quickSort(arr, index + 1, high - 1);
+
+
+        }
+
+
+    }
+
+    public static int getIndex(int[] arr, int low, int high) {
+        int temp = arr[low];
+
+        while (low < high) {
+			// 在右边寻找比目标值temp小的数，应该放在左边的。
+            while (low < high && arr[high] >= temp) {
+                high--;
+
+            }
+            arr[low] = arr[high]; // 这个小的值放在low的位置上
+
+            // 在左边寻找比temp大的数，应该放在右边
+            while (low < high && arr[low] <= temp) {
+                low++;
+            }
+            arr[high] = arr[low];
+
+        }
+
+        // 此时low == high ，所以这个位置就是所要寻找到位置
+        arr[low] = temp;
+        return low;
+    }
+}
+```
+
+2. 优化后的快排
+
+   1. 普通快排的缺点：普通快排每次partition的时候，都是从第一个数字开始，当数组为有序的时候，就会导致二分							折半失效，退化为线性，导致时间复杂度达到O（n²）
+
+   1. 改进：每次partition的时候，都从中间的地方开始，降低线性的可能性。
+
+      代码演示：
+
+      ```java
+      public int getIndex(int[] nums,int low,int high,int mid){
+              int tmp = nums[mid];
+              while(low < high){
+                  while(high > mid && nums[high] >= tmp ){
+                      high --;
+                  }
+                  nums[mid] = nums[high];
+                  mid = high;
+                  while(low < mid && nums[low ] <= tmp){
+                      low ++;
+                  }
+                  nums[mid] = nums[low];
+                  mid = low;
+              }
+              nums[low] = tmp;
+              return low;
+          }
+      ```
+
+      

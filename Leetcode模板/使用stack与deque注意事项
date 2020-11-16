@@ -1,0 +1,7 @@
+LinkedList的add方法可以add(null),不会出现空指针异常
+
+stack的push（）也可以add（null）
+
+
+
+ArrayDeque 的add()不可以add（null） ，它的安全性更高，会出现空指针异常
